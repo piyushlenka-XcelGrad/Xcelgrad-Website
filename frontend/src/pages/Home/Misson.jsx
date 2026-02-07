@@ -1,5 +1,5 @@
 import React from 'react';
-import { Quote, Target, Briefcase, TrendingUp } from 'lucide-react';
+import { Quote, Target } from 'lucide-react';
 import CommonDescription from '../../components/common/Description';
 
 const Mission = () => {

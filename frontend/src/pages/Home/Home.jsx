@@ -6,7 +6,7 @@ import Founders from './Founders';
 import Mission from "./Misson";
 import Vision from './Vision';
 import Testimonials from './Testimonials';
-import Title from '../../components/common/Title';
+// import Title from '../../components/common/Title';
 
 
 const Home = () => {

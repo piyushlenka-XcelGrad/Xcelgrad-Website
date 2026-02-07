@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, GraduationCap, Briefcase, Award } from 'lucide-react';
+import { Linkedin, GraduationCap, Briefcase } from 'lucide-react';
 import Deepak_Verma from "../../assets/images/Deepak_Verma.png"
 import priyanka from "../../assets/images/priyanka.jpg"
 

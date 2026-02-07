@@ -435,7 +435,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
 
 // Replace this with your actual image path
 import xcelgrad_logo from "../../assets/images/xcelgrad_logo2.png";

@@ -3,8 +3,6 @@ import {
   GraduationCap,
   Zap,
   BarChart3,
-  ArrowRight,
-  ChevronRight,
 } from "lucide-react";
 
 
