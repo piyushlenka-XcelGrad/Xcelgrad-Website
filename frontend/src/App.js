@@ -8,7 +8,8 @@ import Footer from './components/common/Footer';
 import Hiring from './pages/Hiring/Hiring';
 import Training from './pages/Training/Training';
 import Home from './pages/Home/Home';
-
+import Job from './pages/Jobs/Job';
+import JobDetailsPage from './pages/Jobs/JobDetailsPage';
 const theme = createTheme({
   palette: {
     primary: {
@@ -29,6 +30,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/hiring" element={<Hiring />} />
               <Route path="/training" element={<Training />} />
+              <Route path="/jobs" element={<Job />} />
+              <Route path="/app/jobs/:id" element={<JobDetailsPage />} />
             </Routes>
           </main>
           <Footer />
