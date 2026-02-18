@@ -1,11 +1,18 @@
 import React from 'react';
 import { Typography, Button, Container, Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
+import Advantages from "./Advantages"
+import Founders from './Founders';
+import Mission from "./Misson";
+import Vision from './Vision';
+import Testimonials from './Testimonials';
+// import Title from '../../components/common/Title';
+
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 relative overflow-hidden">
-      <Container maxWidth="lg" className="pt-24 pb-32 relative z-10">
+    <div className="min-h-screen overflow-x-hidden  bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 relative overflow-hidden">
+      <Container maxWidth="lg" className="pt-24 lg:mt-14 pb-32 relative z-10">
         <div className="text-center">
           <Chip
             label="Creating Day 1 Performers"
@@ -34,6 +41,9 @@ const Home = () => {
             Who{' '}
             <span style={{ color: '#5B47F5' }}>We Are</span>
           </Typography>
+          {/* <div className="p text-4xl">
+             <Title  text1="Who" text2 ="We Are" />
+             </div> */}
 
           <Typography
             variant="h5"
@@ -47,7 +57,6 @@ const Home = () => {
           >
             We believe in bridging the gap between education and employment with outcomes that matter.
           </Typography>
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               component={Link}
@@ -132,6 +141,11 @@ const Home = () => {
           }
         }
       `}</style>
+      <Advantages />
+      <Founders/>
+      <Mission/>
+      <Vision/>
+      <Testimonials/>
     </div>
   );
 };
