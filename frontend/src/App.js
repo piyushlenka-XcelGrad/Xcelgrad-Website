@@ -10,6 +10,8 @@ import Training from './pages/Training/Training';
 import Home from './pages/Home/Home';
 import Job from './pages/Jobs/Job';
 import JobDetailsPage from './pages/Jobs/JobDetailsPage';
+import AuthPage from './pages/Login_Signup/Auth';
+import Profile from './pages/Profile_Page/Profile';
 const theme = createTheme({
   palette: {
     primary: {
@@ -32,6 +34,8 @@ function App() {
               <Route path="/training" element={<Training />} />
               <Route path="/jobs" element={<Job />} />
               <Route path="/app/jobs/:id" element={<JobDetailsPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </main>
           <Footer />
