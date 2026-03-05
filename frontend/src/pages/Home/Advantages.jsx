@@ -11,14 +11,14 @@ const Advantages = () => {
 
   return (
     <div className="relative min-h-screen bg-white font-sans antialiased overflow-hidden">
-      {/* Decorative Background Elements */}
+
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-50/50 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px]" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 lg:py-32">
-        {/* Header Section */}
+
         <div className="max-w-3xl mb-20 mx-auto text-center">
           <HeadButton text="The XcelGrad Advantage"></HeadButton>
 
@@ -99,6 +99,5 @@ const FeatureCard = ({ feature }) => {
   );
 };
 
-export default function App() {
-  return <Advantages />;
-}
+export default Advantages;
+

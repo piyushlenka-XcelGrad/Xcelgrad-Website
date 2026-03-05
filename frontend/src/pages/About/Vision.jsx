@@ -1,29 +1,10 @@
 import React from 'react';
-import { GraduationCap, Globe, Trophy } from 'lucide-react';
 import Title from '../../components/common/Title';
 import Content from '../../components/common/Content';
 import HeadButton from '../../components/common/HeadButton';
+import { visionCards } from '../../Data/VisionData';
 const Vision = () => {
-  const visionCards = [
-    {
-      title: "Enterprise Sales Enablement",
-      icon: <GraduationCap className="w-10 h-10" />,
-      content: "We deliver hands-on, industry-aligned sales training designed for B2B environments equipping professionals with real-world selling skills across IT, HoReCa and HR Tech to perform confidently from Day 1.",
-      isHighlighted: false
-    },
-    {
-      title: "B2B Industry Ecosystem",
-      icon: <Globe className="w-10 h-10" />,
-      content: "We foster a strong network of sales professionals, mentors, and B2B organizations that bridges the gap between learning and revenue enabling faster onboarding, sharper execution, and consistent deal outcomes.",
-      isHighlighted: true
-    },
-    {
-      title: "High-Impact Sales Careers",
-      icon: <Trophy className="w-10 h-10" />,
-      content: "We prepare future sales professionals to drive pipelines, close meaningful deals, and create measurable business impact becoming productive contributors from their very first day on the job.",
-      isHighlighted: false
-    }
-  ];
+
 
   return (
     <section className="py-24 bg-white font-sans antialiased">
@@ -31,8 +12,9 @@ const Vision = () => {
         {/* Header Section */}
         <div className="text-center mb-20 space-y-2">
           <HeadButton text="Vision"/>
+          
           <Title text1="Our" text2="Vision" />
-          <Content text="A world where every corporate hire in India and beyond is job-ready, productive, and impactful from Day 1." />
+          <Content text="To become the most trusted partner in building predictable B2B sales performance engines." />
         </div>
 
         {/* Vision Cards Grid */}

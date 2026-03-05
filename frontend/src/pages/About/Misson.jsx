@@ -1,6 +1,6 @@
 import React from 'react';
 import { Quote, Target } from 'lucide-react';
-import CommonDescription from '../../components/common/Description';
+
 
 const Mission = () => {
   return (
@@ -38,13 +38,10 @@ const Mission = () => {
           <div className="space-y-10 text-center">
             {/* Primary Mission Statement */}
             <p className="text-2xl md:text-2xl lg:text-3xl font-semibold text-slate-900 leading-[1.3] tracking-tight">
-              At XcelGrad, our mission is to design, deliver and scale skilling programs that transform students and professionals into <span className="text-indigo-600">Day-1 performers</span> for startups and enterprises.
+              To design, build, and enable skill-led B2B sales teams with execution discipline — <span className='text-indigo-600'>so performance becomes predictable, not accidental.</span>
             </p>
 
             {/* Secondary Mission Detail */}
-              <CommonDescription textColor="text-gray-500">
-  We focus on building <span className="text-slate-900 font-bold italic">job-ready sales talent</span> by combining practical training, real-world exposure, and industry mentorship—enabling learners to drive pipelines, engage enterprise clients, and create measurable business impact across <span className="text-slate-900 font-bold uppercase tracking-tight">B2B IT, HoReCa and HR Tech</span> sectors.
-</CommonDescription>
           </div>
 
         
@@ -70,6 +67,7 @@ const Mission = () => {
   );
 };
 
-export default function App() {
-  return <Mission />;
-}
+// export default function App() {
+//   return <Mission />;
+// }
+export default Mission;
