@@ -445,12 +445,14 @@ import xcelgrad_logo from "../../assets/images/xcelgrad_logo2.png";
 import { useAuth } from '../../context/AuthContext';
 const navItems = [
   { label: 'Home', path: '/' },
-  { label: 'Hiring', path: '/hiring' },
-  { label: 'Training', path: '/training' },
-  { label: 'Fresher Induction', path: '/fresher' },
-  { label: 'Sales Consulting', path: '/salesconsulting' },
-  { label: 'Job Seekers', path: '/jobs' },
-  { label: 'Skill Seekers', path: '/skillseekers' },
+  { label: 'Jobs', path: '/jobs' },
+  { label: 'Sales Learning', path: '/saleslearning' },
+  { label: 'Freshers', path: '/freshers' },
+  { label: 'Community', path: '/community' },
+  { label: 'Career Path', path: '/career-path' },
+  { label: 'For Businesses', path: '/businesses' },
+  { label: 'About Us', path: '/about' },
+  // { label: 'Skill Seekers', path: '/skillseekers' },
 ];
 
 const Navbar = () => {
@@ -522,7 +524,7 @@ const Navbar = () => {
                 '&.Mui-selected': { bgcolor: 'rgba(91, 71, 245, 0.08)', color: '#5B47F5' }
               }}
             >
-              <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: isActive(item.path) ? 600 : 500 }} />
+              <ListItemText  primary={item.label} primaryTypographyProps={{ fontWeight: isActive(item.path) ? 900 : 800 }} />
             </ListItemButton>
           </ListItem>
         ))}

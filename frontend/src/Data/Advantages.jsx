@@ -43,4 +43,5 @@ export  const Features = [
       lightColor: "bg-rose-50",
       textColor: "text-rose-600",
     },
+    
   ];

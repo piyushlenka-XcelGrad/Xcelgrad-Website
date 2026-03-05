@@ -687,7 +687,7 @@ const App = () => {
   // --- UPDATED: Dynamic Salary Ranges Definition ---
   const SALARY_RANGES = {
     Yearly: [
-      { label: '0 - 6 Lakhs', min: 0, max: 600000 },
+      { label: '1 - 6 Lakhs', min: 1, max: 600000 },
       { label: '7 - 15 Lakhs', min: 600001, max: 1500000 },
       { label: '15 - 30 Lakhs', min: 1500001, max: 3000000 },
       { label: '30+ Lakhs', min: 3000001, max: Infinity }
@@ -835,10 +835,10 @@ const App = () => {
         <section className="py-12 sm:py-20 text-center">
           <HeadButton text="Hiring Platform"/>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-6">
-              Find Your Next <span className="text-indigo-600"> Opportunity</span>
+              B2B Sales <span className="text-indigo-600">  Opportunities</span>
           </h2>
           <p className="text-slate-500 text-base sm:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto px-4">
-            Browse thousands of job openings from top companies and fast-growing startups. Filter by role, experience, and job type.
+           Curated roles across B2B industries, aligned to structured execution expectations
           </p>
           
           <div className="max-w-[700px] mx-auto relative group px-2 sm:px-0">

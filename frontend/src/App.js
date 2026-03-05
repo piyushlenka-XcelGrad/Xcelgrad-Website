@@ -12,6 +12,12 @@ import Job from './pages/Jobs/Job';
 import JobDetailsPage from './pages/Jobs/JobDetailsPage';
 import AuthPage from './pages/Login_Signup/Auth';
 import Profile from './pages/Profile_Page/Profile';
+import Skilling from './pages/Skilling/Skilling';
+import About from "./pages/About/About"
+import Freshers from "./pages/Freshers/Freshers"
+import Community from "./pages/Community/Community"
+import Careerpath from './pages/CareerPath/Careerpath';
+import Saleslearning from './pages/SalesLearning/Saleslearning';
 const theme = createTheme({
   palette: {
     primary: {
@@ -36,6 +42,12 @@ function App() {
               <Route path="/app/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/skilling" element={<Skilling />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/freshers" element={<Freshers />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/career-path" element={<Careerpath />} />
+              <Route path="/saleslearning" element={<Saleslearning />} />
             </Routes>
           </main>
           <Footer />

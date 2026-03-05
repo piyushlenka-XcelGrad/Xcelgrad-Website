@@ -1,151 +1,83 @@
-import React from 'react';
-import { Typography, Button, Container, Chip } from '@mui/material';
-import { Link } from 'react-router-dom';
-import Advantages from "./Advantages"
-import Founders from './Founders';
-import Mission from "./Misson";
-import Vision from './Vision';
-import Testimonials from './Testimonials';
-// import Title from '../../components/common/Title';
 
+
+import React from "react";
+import { ArrowRight, Ear, Play } from "lucide-react";
+
+import ThreeDBackground from "../../Threejs/ThreeDBackground";
+import Testimonials from "./Testimonials";
+import HeroSection from "./Hero";
+import B2BSalesProblem from "./B2BFoucus";
+import GallerySection from "./Gallery";
+import SparkleBtn from "../../components/common/SparkleBtn";
+import Title from "../../components/common/Title";
+import HowXcelGradWorks from "./Working";
+import ForProfessionals from "./SalesProfessionals";
+import EarlyCareerHighlight from "./Career";
+import ForBusinesses from "./ForBusinesses";
+import SelectedEngagements from "./Engagements";
+import SalesInsights from "./Sales";
+// import Gallery from "./Gallery";
 
 const Home = () => {
   return (
-    <div className="min-h-screen overflow-x-hidden  bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 relative overflow-hidden">
-      <Container maxWidth="lg" className="pt-24 lg:mt-14 pb-32 relative z-10">
-        <div className="text-center">
-          <Chip
-            label="Creating Day 1 Performers"
-            sx={{
-              backgroundColor: '#EDE9FE',
-              color: '#5B47F5',
-              fontSize: '14px',
-              fontWeight: 500,
-              px: 2,
-              py: 2.5,
-              height: 'auto',
-              borderRadius: '50px',
-              mb: 4,
-            }}
-          />
+    <div className="min-h-screen bg-[#fafafa] font-sans selection:bg-[#5B47F5]/20 selection:text-[#5B47F5] overflow-x-hidden relative">
+      
+      {/* 3D Background Component */}
+      <ThreeDBackground />
 
-          <Typography
-            variant="h1"
-            className="font-bold mb-6"
-            sx={{
-              fontSize: { xs: '3rem', md: '4.5rem', lg: '5.5rem' },
-              lineHeight: 1.1,
-              color: '#1A1A1A',
-            }}
-          >
-            Who{' '}
-            <span style={{ color: '#5B47F5' }}>We Are</span>
-          </Typography>
-          {/* <div className="p text-4xl">
-             <Title  text1="Who" text2 ="We Are" />
-             </div> */}
+      {/* HERO SECTION */}
+      <main className="relative z-10 pt-32 pb-24 lg:pt-48 lg:pb-32 px-6">
+        <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
 
-          <Typography
-            variant="h5"
-            className="mb-12 max-w-3xl mx-auto"
-            sx={{
-              color: '#6B7280',
-              fontSize: { xs: '1.1rem', md: '1.3rem' },
-              lineHeight: 1.6,
-              fontWeight: 400,
-            }}
-          >
-            We believe in bridging the gap between education and employment with outcomes that matter.
-          </Typography>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              component={Link}
-              to="/students"
-              variant="contained"
-              size="large"
-              sx={{
-                backgroundColor: '#5B47F5',
-                color: 'white',
-                textTransform: 'none',
-                px: 5,
-                py: 2,
-                fontSize: '1.1rem',
-                borderRadius: '50px',
-                fontWeight: 600,
-                boxShadow: '0 8px 24px rgba(91, 71, 245, 0.3)',
-                '&:hover': {
-                  backgroundColor: '#4A38D4',
-                  boxShadow: '0 12px 32px rgba(91, 71, 245, 0.4)',
-                  transform: 'translateY(-2px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-            >
-              Get Started
-            </Button>
+          {/* Tag Button */}
+          <SparkleBtn text="Creating Day 1 Performers" />
 
-            <Button
-              component={Link}
-              to="/about"
-              variant="outlined"
-              size="large"
-              sx={{
-                color: '#1A1A1A',
-                borderColor: '#1A1A1A',
-                borderWidth: 2,
-                textTransform: 'none',
-                px: 5,
-                py: 2,
-                fontSize: '1.1rem',
-                borderRadius: '50px',
-                fontWeight: 600,
-                '&:hover': {
-                  borderColor: '#5B47F5',
-                  color: '#5B47F5',
-                  borderWidth: 2,
-                  backgroundColor: 'transparent',
-                  transform: 'translateY(-2px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-            >
-              Learn More
-            </Button>
+          {/* Title */}
+          <Title text1="Who" text2="We Are" size="7xl" />
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-12 font-medium">
+            We believe in bridging the gap between education and employment with{" "}
+            <span className="text-slate-900 font-semibold">
+              outcomes that matter.
+            </span>{" "}
+            Transform your potential into professional power.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center w-full sm:w-auto">
+            
+            <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#5B47F5] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#4A38D4] transition-all duration-300 shadow-[0_8px_24px_rgba(91,71,245,0.3)] hover:shadow-[0_12px_32px_rgba(91,71,245,0.4)] hover:-translate-y-1 active:scale-95">
+              Get Started 
+              <ArrowRight className="w-5 h-5" />
+            </button>
+
+            <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-slate-900 px-8 py-4 rounded-full font-bold text-lg border-2 border-slate-200 hover:border-[#5B47F5] hover:text-[#5B47F5] transition-all duration-300 hover:bg-slate-50 hover:-translate-y-1 active:scale-95 shadow-sm">
+              <Play className="w-5 h-5" fill="currentColor" />
+              Watch Video
+            </button>
+
           </div>
         </div>
-      </Container>
+      </main>
 
-      <div 
-        className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-        style={{ animation: 'blob 7s infinite' }}
-      />
-      <div 
-        className="absolute top-40 right-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-        style={{ animation: 'blob 7s infinite 2s' }}
-      />
-      <div 
-        className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-        style={{ animation: 'blob 7s infinite 4s' }}
-      />
+      {/* SUB SECTIONS */}
+      <HeroSection/>
+      <B2BSalesProblem/>
+      <HowXcelGradWorks/>
+      <ForProfessionals/>
+      <EarlyCareerHighlight/>
+      <ForBusinesses/>
+      <Testimonials />
+      <SelectedEngagements/>
+      <GallerySection/>
+      <SalesInsights/>
+      {/* <Advantages /> */}
+      {/* <Founders /> */}
+      {/* <Mission /> */}
+      {/* <Vision /> */}
+      {/* <Testimonials /> */}
 
-      <style>{`
-        @keyframes blob {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-        }
-      `}</style>
-      <Advantages />
-      <Founders/>
-      <Mission/>
-      <Vision/>
-      <Testimonials/>
     </div>
   );
 };
