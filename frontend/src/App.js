@@ -21,6 +21,7 @@ import Saleslearning from './pages/SalesLearning/Saleslearning';
 import Businesses from './pages/Businesses/Businesses';
 import PrivacyPolicy from './components/common/PrivacyPolicy';
 import TermsOfService from './components/common/Terms';
+import ProtectedRoute from './components/Security/ProtectedRoute';
 const theme = createTheme({
   palette: {
     primary: {
@@ -44,7 +45,15 @@ function App() {
               <Route path="/jobs" element={<Job />} />
               <Route path="/app/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/profile" element={<Profile />} />
+              {/* <Route path="/profile" element={<Profile />} /> */}
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
               <Route path="/skilling" element={<Skilling />} />
               <Route path="/about" element={<About />} />
               <Route path="/freshers" element={<Freshers />} />
