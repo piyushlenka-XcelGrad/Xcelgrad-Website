@@ -2,7 +2,7 @@ import React from 'react';
 import { Camera, ArrowUpRight, Sparkles } from 'lucide-react';
 
 const GallerySection = () => {
-  // Gallery data with varying spans to create a masonry bento-grid look
+  
   const galleryItems = [
     {
       id: 1,

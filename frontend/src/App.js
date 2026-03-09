@@ -18,6 +18,9 @@ import Freshers from "./pages/Freshers/Freshers"
 import Community from "./pages/Community/Community"
 import Careerpath from './pages/CareerPath/Careerpath';
 import Saleslearning from './pages/SalesLearning/Saleslearning';
+import Businesses from './pages/Businesses/Businesses';
+import PrivacyPolicy from './components/common/PrivacyPolicy';
+import TermsOfService from './components/common/Terms';
 const theme = createTheme({
   palette: {
     primary: {
@@ -48,6 +51,10 @@ function App() {
               <Route path="/community" element={<Community />} />
               <Route path="/career-path" element={<Careerpath />} />
               <Route path="/saleslearning" element={<Saleslearning />} />
+              <Route path="/businesses" element={<Businesses />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+
             </Routes>
           </main>
           <Footer />

@@ -6,9 +6,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
-// ==========================================
-// DYNAMIC DATA: Add, remove, or edit tiles here
-// ==========================================
+
 const salesEngagements = [
   {
     id: 1,

@@ -1,9 +1,9 @@
-
 // import React, { useState, useEffect, useRef } from 'react';
 // import { 
 //   User, MapPin, Briefcase, GraduationCap, FileText, 
 //   CheckCircle2, Loader2, Upload, Plus, X, 
-//   ChevronRight, Save, Camera, Calendar, Building
+//   ChevronRight, Save, Camera, Calendar, Building,
+//   Pencil, Trash2 // <-- NEW ICONS
 // } from 'lucide-react';
 // import toast, { Toaster } from 'react-hot-toast';
 // import { useNavigate } from 'react-router-dom';
@@ -72,16 +72,19 @@
 //   const [isEduModalOpen, setIsEduModalOpen] = useState(false);
 //   const [isExpModalOpen, setIsExpModalOpen] = useState(false);
   
-//   const [newEdu, setNewEdu] = useState({ college_name: '', degree: '', specialization: '', graduation_year: '' });
+//   // NEW: Track IDs for editing
+//   const [editingEduId, setEditingEduId] = useState(null);
+//   const [editingExpId, setEditingExpId] = useState(null);
+
+//   const [newEdu, setNewEdu] = useState({ education_level: '', college_name: '', degree: '', specialization: '', graduation_year: '' });
 //   const [newExp, setNewExp] = useState({ company_name: '', role: '', start_date: '', end_date: '', is_current: false, work_description: '' });
 
-  
 //   const [profile, setProfile] = useState({
 //     full_name: '', email: '', headline: '', city: '', country: '',
 //     phone_number: '', linkedin_url: '', job_role_interested: '',
 //     job_type: '', preferred_location: '', open_to_relocation: false,
 //     industry: '', current_salary: '', expected_salary: '',
-//     total_experience: '', post_graduation_degree: '', post_graduation_year: '',
+//     total_experience: '',
 //     skills: [], educations: [], experiences: [], profile_completion_score: 0,
 //     profile_photo_url: '', resume_url: ''
 //   });
@@ -95,7 +98,7 @@
 //         setProfile(response.data);
 //       } catch (err) {
 //         toast.error('Failed to load profile from server.');
-//         if (err.response?.status === 401) navigate('/login');
+//         if (err.response?.status === 401) navigate('/auth');
 //       } finally {
 //         setLoading(false);
 //       }
@@ -115,7 +118,6 @@
 //     setSaving(true);
 //     const toastId = toast.loading('Saving changes...');
 //     try {
-//       // NEW: Included all 6 new fields in the payload
 //       const payload = {
 //         headline: profile.headline || "",
 //         city: profile.city || "",
@@ -130,8 +132,6 @@
 //         current_salary: profile.current_salary || "",
 //         expected_salary: profile.expected_salary || "",
 //         total_experience: profile.total_experience || "",
-//         post_graduation_degree: profile.post_graduation_degree || "",
-//         post_graduation_year: profile.post_graduation_year || "",
 //         skills: profile.skills || []
 //       };
 
@@ -139,7 +139,6 @@
 //       setProfile(response.data);
 //       toast.success('Profile updated successfully!', { id: toastId });
 //     } catch (err) {
-//       console.error("Save Error Details:", err.response?.data); 
 //       const errorMessage = err.response?.data?.detail ? JSON.stringify(err.response.data.detail) : 'Failed to save profile. Please try again.';
 //       toast.error(errorMessage, { id: toastId });
 //     } finally {
@@ -199,18 +198,69 @@
 //     setProfile(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skillToRemove) }));
 //   };
 
+//   // --- EDUCATION CRUD HANDLERS ---
+//   const openEditEduModal = (edu) => {
+//     setNewEdu({ ...edu });
+//     setEditingEduId(edu.id);
+//     setIsEduModalOpen(true);
+//   };
+
+//   const handleDeleteEducation = async (id) => {
+//     if (!window.confirm("Are you sure you want to delete this education?")) return;
+//     const toastId = toast.loading("Deleting education...");
+//     try {
+//       const response = await api.delete(`/website/profile/me/education/${id}`);
+//       setProfile(response.data);
+//       toast.success("Education deleted!", { id: toastId });
+//     } catch (err) {
+//       toast.error("Failed to delete education.", { id: toastId });
+//     }
+//   };
+
 //   const handleSaveEducation = async () => {
-//     if(!newEdu.college_name || !newEdu.degree) return toast.error("College and Degree are required.");
+//     if(!newEdu.education_level || !newEdu.college_name || !newEdu.degree) {
+//       return toast.error("Education Level, Institution, and Degree are required.");
+//     }
     
 //     const toastId = toast.loading("Saving education...");
 //     try {
-//       const response = await api.post('/website/profile/me/education', newEdu);
+//       let response;
+//       if (editingEduId) {
+//         response = await api.put(`/website/profile/me/education/${editingEduId}`, newEdu);
+//       } else {
+//         response = await api.post('/website/profile/me/education', newEdu);
+//       }
+      
 //       setProfile(response.data); 
-//       setNewEdu({ college_name: '', degree: '', specialization: '', graduation_year: '' });
+//       setNewEdu({ education_level: '', college_name: '', degree: '', specialization: '', graduation_year: '' });
+//       setEditingEduId(null);
 //       setIsEduModalOpen(false);
-//       toast.success("Education added!", { id: toastId });
+//       toast.success("Education saved!", { id: toastId });
 //     } catch (err) {
 //       toast.error("Failed to save education.", { id: toastId });
+//     }
+//   };
+
+//   // --- EXPERIENCE CRUD HANDLERS ---
+//   const openEditExpModal = (exp) => {
+//     setNewExp({ 
+//       ...exp, 
+//       start_date: exp.start_date ? exp.start_date.substring(0, 7) : '', // Format YYYY-MM
+//       end_date: exp.end_date ? exp.end_date.substring(0, 7) : '' 
+//     });
+//     setEditingExpId(exp.id);
+//     setIsExpModalOpen(true);
+//   };
+
+//   const handleDeleteExperience = async (id) => {
+//     if (!window.confirm("Are you sure you want to delete this experience?")) return;
+//     const toastId = toast.loading("Deleting experience...");
+//     try {
+//       const response = await api.delete(`/website/profile/me/experience/${id}`);
+//       setProfile(response.data);
+//       toast.success("Experience deleted!", { id: toastId });
+//     } catch (err) {
+//       toast.error("Failed to delete experience.", { id: toastId });
 //     }
 //   };
 
@@ -221,17 +271,24 @@
 
 //     const payload = {
 //       ...newExp,
-//       start_date: `${newExp.start_date}-01`,
-//       end_date: newExp.is_current || !newExp.end_date ? null : `${newExp.end_date}-01`
+//       start_date: newExp.start_date.length === 7 ? `${newExp.start_date}-01` : newExp.start_date,
+//       end_date: newExp.is_current || !newExp.end_date ? null : (newExp.end_date.length === 7 ? `${newExp.end_date}-01` : newExp.end_date)
 //     };
 
 //     const toastId = toast.loading("Saving experience...");
 //     try {
-//       const response = await api.post('/website/profile/me/experience', payload);
+//       let response;
+//       if (editingExpId) {
+//         response = await api.put(`/website/profile/me/experience/${editingExpId}`, payload);
+//       } else {
+//         response = await api.post('/website/profile/me/experience', payload);
+//       }
+      
 //       setProfile(response.data); 
 //       setNewExp({ company_name: '', role: '', start_date: '', end_date: '', is_current: false, work_description: '' });
+//       setEditingExpId(null);
 //       setIsExpModalOpen(false);
-//       toast.success("Experience added!", { id: toastId });
+//       toast.success("Experience saved!", { id: toastId });
 //     } catch (err) {
 //       toast.error("Failed to save experience.", { id: toastId });
 //     }
@@ -362,18 +419,8 @@
 //                   <InputField label="Email Address" id="email" type="email" placeholder="e.g. email@example.com" value={profile.email} onChange={handleInputChange} disabled />
 //                 </div>
                 
-//                 <InputField 
-//                   label="Professional Headline" id="headline" 
-//                   placeholder="e.g. Senior Sales Executive | B2B SaaS | Revenue Driver"
-//                   value={profile.headline} onChange={handleInputChange} 
-//                 />
-
-//                 {/* NEW: Industry Input */}
-//                 <InputField 
-//                   label="Current Industry" id="industry" 
-//                   placeholder="e.g. Software, Healthcare, Sales"
-//                   value={profile.industry} onChange={handleInputChange} 
-//                 />
+//                 <InputField label="Professional Headline" id="headline" placeholder="e.g. Senior Sales Executive | B2B SaaS | Revenue Driver" value={profile.headline} onChange={handleInputChange} />
+//                 <InputField label="Current Industry" id="industry" placeholder="e.g. Software, Healthcare, Sales" value={profile.industry} onChange={handleInputChange} />
                 
 //                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
 //                   <InputField label="City" id="city" placeholder="e.g. Mumbai" value={profile.city} onChange={handleInputChange} />
@@ -394,37 +441,16 @@
 //               <div className="animate-in fade-in slide-in-from-right-4 duration-500">
 //                 <h2 className="text-2xl font-black text-slate-900 mb-8">Career Preferences</h2>
                 
-//                 <InputField 
-//                   label="Desired Job Role" id="job_role_interested" 
-//                   placeholder="e.g. Sales Manager, Business Development Executive"
-//                   value={profile.job_role_interested} onChange={handleInputChange} 
-//                 />
+//                 <InputField label="Desired Job Role" id="job_role_interested" placeholder="e.g. Sales Manager, Business Development Executive" value={profile.job_role_interested} onChange={handleInputChange} />
                 
 //                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-//                   <SelectField 
-//                     label="Preferred Job Type" id="job_type" 
-//                     value={profile.job_type} onChange={handleInputChange}
-//                     options={['Full-time', 'Part-time', 'Internship', 'Contract']}
-//                   />
-//                   <InputField 
-//                     label="Preferred Location" id="preferred_location" 
-//                     placeholder="e.g. Remote, Bangalore, Delhi"
-//                     value={profile.preferred_location} onChange={handleInputChange} 
-//                   />
+//                   <SelectField label="Preferred Job Type" id="job_type" value={profile.job_type} onChange={handleInputChange} options={['Full-time', 'Part-time', 'Internship', 'Contract']} />
+//                   <InputField label="Preferred Location" id="preferred_location" placeholder="e.g. Remote, Bangalore, Delhi" value={profile.preferred_location} onChange={handleInputChange} />
 //                 </div>
 
-//                 {/* NEW: Current and Expected Salary Inputs */}
 //                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 mt-2">
-//                   <InputField 
-//                     label="Current Salary" id="current_salary" 
-//                     placeholder="e.g. 8 Lakhs or $60k"
-//                     value={profile.current_salary} onChange={handleInputChange} 
-//                   />
-//                   <InputField 
-//                     label="Expected Salary" id="expected_salary" 
-//                     placeholder="e.g. 12 Lakhs or $80k"
-//                     value={profile.expected_salary} onChange={handleInputChange} 
-//                   />
+//                   <InputField label="Current Salary" id="current_salary" placeholder="e.g. 8 Lakhs or $60k" value={profile.current_salary} onChange={handleInputChange} />
+//                   <InputField label="Expected Salary" id="expected_salary" placeholder="e.g. 12 Lakhs or $80k" value={profile.expected_salary} onChange={handleInputChange} />
 //                 </div>
                 
 //                 <div className="flex items-center justify-between p-6 mt-4 bg-slate-50 border border-slate-200 rounded-2xl">
@@ -492,30 +518,15 @@
 //             {activeTab === 'background' && (
 //               <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                 
-//                 {/* NEW: Standalone Details block for Experience & Post Grad before the arrays */}
 //                 <div className="mb-10 bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-200">
-//                   <h3 className="text-lg font-bold text-slate-900 mb-6 uppercase tracking-wider text-xs">General Background</h3>
+//                   <h3 className="text-lg font-bold text-slate-900 mb-6 uppercase tracking-wider text-xs">Professional Background</h3>
                   
 //                   <InputField 
 //                     label="Total Professional Experience" id="total_experience" 
 //                     placeholder="e.g. 5 Years, 3 Months"
 //                     value={profile.total_experience} onChange={handleInputChange} 
 //                   />
-
-//                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 mt-2">
-//                     <InputField 
-//                       label="Post Graduation Degree" id="post_graduation_degree" 
-//                       placeholder="e.g. MBA, MCA"
-//                       value={profile.post_graduation_degree} onChange={handleInputChange} 
-//                     />
-//                     <InputField 
-//                       label="Post Graduation Year" id="post_graduation_year" 
-//                       placeholder="e.g. 2024"
-//                       value={profile.post_graduation_year} onChange={handleInputChange} 
-//                     />
-//                   </div>
                   
-//                   {/* Local Save for just this section */}
 //                   <div className="flex justify-end mt-2">
 //                     <button onClick={handleSaveProfile} disabled={saving} className="text-sm font-bold bg-indigo-100 text-indigo-700 px-5 py-2.5 rounded-xl hover:bg-indigo-200 transition-colors">
 //                       {saving ? 'Saving...' : 'Save Background'}
@@ -526,7 +537,7 @@
 //                 {/* EDUCATION SECTION */}
 //                 <div className="flex items-center justify-between mb-6">
 //                   <h2 className="text-2xl font-black text-slate-900">Education</h2>
-//                   <button onClick={() => setIsEduModalOpen(true)} className="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-colors">
+//                   <button onClick={() => { setNewEdu({ education_level: '', college_name: '', degree: '', specialization: '', graduation_year: '' }); setEditingEduId(null); setIsEduModalOpen(true); }} className="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-colors">
 //                     <Plus size={16} /> Add Education
 //                   </button>
 //                 </div>
@@ -537,10 +548,20 @@
 //                   </div>
 //                 ) : (
 //                   <div className="space-y-4 mb-10">
-//                     {profile.educations.map((edu, idx) => (
-//                       <div key={idx} className="flex gap-5 p-5 border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-white">
+//                     {profile.educations.map((edu) => (
+//                       <div key={edu.id} className="flex gap-5 p-5 border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-white relative group">
+                        
+//                         {/* --- EDIT / DELETE ACTIONS --- */}
+//                         <div className="absolute top-4 right-4 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+//                           <button onClick={() => openEditEduModal(edu)} className="text-slate-400 hover:text-indigo-600 transition-colors"><Pencil size={18} /></button>
+//                           <button onClick={() => handleDeleteEducation(edu.id)} className="text-slate-400 hover:text-red-600 transition-colors"><Trash2 size={18} /></button>
+//                         </div>
+
 //                         <div className="mt-1 bg-indigo-50 p-3.5 rounded-xl text-indigo-600 h-fit"><GraduationCap size={24} /></div>
-//                         <div>
+//                         <div className="pr-12">
+//                           <div className="flex items-center gap-2 mb-1">
+//                             <span className="bg-slate-100 text-slate-600 text-xs font-bold px-2 py-0.5 rounded-md">{edu.education_level}</span>
+//                           </div>
 //                           <h4 className="font-bold text-slate-900 text-lg">{edu.degree} {edu.specialization && `in ${edu.specialization}`}</h4>
 //                           <p className="text-slate-600 font-semibold mt-0.5">{edu.college_name}</p>
 //                           <p className="text-slate-400 text-sm mt-1.5 flex items-center gap-1.5"><Calendar size={14}/> Class of {edu.graduation_year}</p>
@@ -555,7 +576,7 @@
 //                 {/* EXPERIENCE SECTION */}
 //                 <div className="flex items-center justify-between mb-6">
 //                   <h2 className="text-2xl font-black text-slate-900">Experience Roles</h2>
-//                   <button onClick={() => setIsExpModalOpen(true)} className="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-colors">
+//                   <button onClick={() => { setNewExp({ company_name: '', role: '', start_date: '', end_date: '', is_current: false, work_description: '' }); setEditingExpId(null); setIsExpModalOpen(true); }} className="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-xl transition-colors">
 //                     <Plus size={16} /> Add Experience
 //                   </button>
 //                 </div>
@@ -566,10 +587,17 @@
 //                   </div>
 //                 ) : (
 //                   <div className="space-y-4">
-//                     {profile.experiences.map((exp, idx) => (
-//                       <div key={idx} className="flex gap-5 p-5 border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-white">
+//                     {profile.experiences.map((exp) => (
+//                       <div key={exp.id} className="flex gap-5 p-5 border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-white relative group">
+                        
+//                         {/* --- EDIT / DELETE ACTIONS --- */}
+//                         <div className="absolute top-4 right-4 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+//                           <button onClick={() => openEditExpModal(exp)} className="text-slate-400 hover:text-indigo-600 transition-colors"><Pencil size={18} /></button>
+//                           <button onClick={() => handleDeleteExperience(exp.id)} className="text-slate-400 hover:text-red-600 transition-colors"><Trash2 size={18} /></button>
+//                         </div>
+
 //                         <div className="mt-1 bg-blue-50 p-3.5 rounded-xl text-blue-600 h-fit"><Briefcase size={24} /></div>
-//                         <div className="flex-1">
+//                         <div className="flex-1 pr-12">
 //                           <h4 className="font-bold text-slate-900 text-lg">{exp.role}</h4>
 //                           <p className="text-slate-600 font-semibold mt-0.5 flex items-center gap-1.5"><Building size={16} className="text-slate-400"/> {exp.company_name}</p>
 //                           <p className="text-slate-400 text-sm mt-1.5 flex items-center gap-1.5">
@@ -592,17 +620,22 @@
 //       </div>
 
 //       {/* --- MODALS --- */}
-//       <Modal isOpen={isEduModalOpen} onClose={() => setIsEduModalOpen(false)} title="Add Education">
+//       <Modal isOpen={isEduModalOpen} onClose={() => setIsEduModalOpen(false)} title={editingEduId ? "Edit Education" : "Add Education"}>
 //         <div className="space-y-4">
-//           <InputField label="College / University Name" id="college_name" required placeholder="e.g. Delhi University" value={newEdu.college_name} onChange={(e) => setNewEdu({...newEdu, college_name: e.target.value})} />
-//           <InputField label="Degree" id="degree" required placeholder="e.g. BBA, MBA, B.Com" value={newEdu.degree} onChange={(e) => setNewEdu({...newEdu, degree: e.target.value})} />
-//           <InputField label="Specialization / Major" id="specialization" placeholder="e.g. Business Administration" value={newEdu.specialization} onChange={(e) => setNewEdu({...newEdu, specialization: e.target.value})} />
-//           <InputField label="Graduation Year" id="graduation_year" placeholder="e.g. 2026" type="number" value={newEdu.graduation_year} onChange={(e) => setNewEdu({...newEdu, graduation_year: e.target.value})} />
-//           <button onClick={handleSaveEducation} className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-colors">Save Education</button>
+//           <SelectField 
+//             label="Education Level" id="education_level" required 
+//             options={['10th', '12th', 'Diploma', 'Graduation', 'Post Graduation', 'PhD']} 
+//             value={newEdu.education_level} onChange={(e) => setNewEdu({...newEdu, education_level: e.target.value})} 
+//           />
+//           <InputField label="School / College / University Name" id="college_name" required placeholder="e.g. Delhi University" value={newEdu.college_name} onChange={(e) => setNewEdu({...newEdu, college_name: e.target.value})} />
+//           <InputField label="Degree / Class" id="degree" required placeholder="e.g. B.Tech, 12th, MBA" value={newEdu.degree} onChange={(e) => setNewEdu({...newEdu, degree: e.target.value})} />
+//           <InputField label="Specialization / Stream" id="specialization" placeholder="e.g. PCM, Science, Finance" value={newEdu.specialization} onChange={(e) => setNewEdu({...newEdu, specialization: e.target.value})} />
+//           <InputField label="Passing Year" id="graduation_year" placeholder="e.g. 2026" type="number" value={newEdu.graduation_year} onChange={(e) => setNewEdu({...newEdu, graduation_year: e.target.value})} />
+//           <button onClick={handleSaveEducation} className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-colors">{editingEduId ? "Update Education" : "Save Education"}</button>
 //         </div>
 //       </Modal>
 
-//       <Modal isOpen={isExpModalOpen} onClose={() => setIsExpModalOpen(false)} title="Add Experience">
+//       <Modal isOpen={isExpModalOpen} onClose={() => setIsExpModalOpen(false)} title={editingExpId ? "Edit Experience" : "Add Experience"}>
 //         <div className="space-y-4">
 //           <InputField label="Company Name" id="company_name" required placeholder="e.g. TechCorp Sales" value={newExp.company_name} onChange={(e) => setNewExp({...newExp, company_name: e.target.value})} />
 //           <InputField label="Role / Title" id="role" required placeholder="e.g. Sales Intern" value={newExp.role} onChange={(e) => setNewExp({...newExp, role: e.target.value})} />
@@ -618,7 +651,7 @@
 //             <label htmlFor="work_description" className="block text-xs font-bold text-slate-700 tracking-wide mb-2 uppercase">Work Description</label>
 //             <textarea id="work_description" rows="4" placeholder="What did you do? Key achievements?" value={newExp.work_description} onChange={(e) => setNewExp({...newExp, work_description: e.target.value})} className="w-full px-4 py-3 rounded-xl placeholder-slate-400 text-slate-900 focus:outline-none transition-all border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 bg-slate-50 focus:bg-white resize-none"></textarea>
 //           </div>
-//           <button onClick={handleSaveExperience} className="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-colors">Save Experience</button>
+//           <button onClick={handleSaveExperience} className="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-colors">{editingExpId ? "Update Experience" : "Save Experience"}</button>
 //         </div>
 //       </Modal>
 
@@ -627,18 +660,12 @@
 // }
 
 
-
-
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   User, MapPin, Briefcase, GraduationCap, FileText, 
   CheckCircle2, Loader2, Upload, Plus, X, 
   ChevronRight, Save, Camera, Calendar, Building,
-  Pencil, Trash2 // <-- NEW ICONS
+  Pencil, Trash2, LayoutDashboard, Building2, Clock, XCircle, ArrowRight
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -702,14 +729,19 @@ export default function ProfilePage() {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('basic');
+  
+  // Set default tab to dashboard so it's the first thing they see
+  const [activeTab, setActiveTab] = useState('dashboard'); 
   
   const [isEduModalOpen, setIsEduModalOpen] = useState(false);
   const [isExpModalOpen, setIsExpModalOpen] = useState(false);
   
-  // NEW: Track IDs for editing
   const [editingEduId, setEditingEduId] = useState(null);
   const [editingExpId, setEditingExpId] = useState(null);
+
+  // New states for the job applications dashboard
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [loadingJobs, setLoadingJobs] = useState(false);
 
   const [newEdu, setNewEdu] = useState({ education_level: '', college_name: '', degree: '', specialization: '', graduation_year: '' });
   const [newExp, setNewExp] = useState({ company_name: '', role: '', start_date: '', end_date: '', is_current: false, work_description: '' });
@@ -726,6 +758,7 @@ export default function ProfilePage() {
 
   const [skillInput, setSkillInput] = useState('');
 
+  // 1. Fetch Profile Data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -733,13 +766,31 @@ export default function ProfilePage() {
         setProfile(response.data);
       } catch (err) {
         toast.error('Failed to load profile from server.');
-        if (err.response?.status === 401) navigate('/login');
+        if (err.response?.status === 401) navigate('/auth');
       } finally {
         setLoading(false);
       }
     };
     fetchProfile();
   }, [navigate]);
+
+  // 2. Fetch Job Applications when viewing Dashboard
+  useEffect(() => {
+    if (activeTab === 'dashboard') {
+      const fetchApplications = async () => {
+        setLoadingJobs(true);
+        try {
+          const response = await api.get('/website/profile/me/applications');
+          setAppliedJobs(response.data);
+        } catch (err) {
+          toast.error("Failed to load your applications.");
+        } finally {
+          setLoadingJobs(false);
+        }
+      };
+      fetchApplications();
+    }
+  }, [activeTab]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -833,7 +884,6 @@ export default function ProfilePage() {
     setProfile(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skillToRemove) }));
   };
 
-  // --- EDUCATION CRUD HANDLERS ---
   const openEditEduModal = (edu) => {
     setNewEdu({ ...edu });
     setEditingEduId(edu.id);
@@ -876,11 +926,10 @@ export default function ProfilePage() {
     }
   };
 
-  // --- EXPERIENCE CRUD HANDLERS ---
   const openEditExpModal = (exp) => {
     setNewExp({ 
       ...exp, 
-      start_date: exp.start_date ? exp.start_date.substring(0, 7) : '', // Format YYYY-MM
+      start_date: exp.start_date ? exp.start_date.substring(0, 7) : '', 
       end_date: exp.end_date ? exp.end_date.substring(0, 7) : '' 
     });
     setEditingExpId(exp.id);
@@ -942,6 +991,7 @@ export default function ProfilePage() {
   );
 
   const TABS = [
+    { id: 'dashboard', label: 'My Applications', icon: LayoutDashboard },
     { id: 'basic', label: 'Basic Info', icon: User },
     { id: 'career', label: 'Career Prefs', icon: Briefcase },
     { id: 'skills', label: 'Skills & Resume', icon: FileText },
@@ -1044,6 +1094,103 @@ export default function ProfilePage() {
 
           <div className="flex-1 bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200">
             
+            {/* --- TAB: DASHBOARD (My Applications) --- */}
+            {activeTab === 'dashboard' && (
+              <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-black text-slate-900">Application Dashboard</h2>
+                  <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-100">
+                    Overview
+                  </span>
+                </div>
+
+                {/* Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="bg-blue-50 p-3 rounded-xl text-blue-600"><Briefcase size={24} /></div>
+                    <div>
+                      <p className="text-slate-500 text-xs font-bold tracking-wider uppercase mb-0.5">Total Applied</p>
+                      <p className="text-2xl font-black text-slate-900">{appliedJobs.length}</p>
+                    </div>
+                  </div>
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="bg-amber-50 p-3 rounded-xl text-amber-500"><Clock size={24} /></div>
+                    <div>
+                      <p className="text-slate-500 text-xs font-bold tracking-wider uppercase mb-0.5">In Review</p>
+                      <p className="text-2xl font-black text-slate-900">
+                        {appliedJobs.filter(job => ['Applied', 'Reviewing'].includes(job.status)).length}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600"><CheckCircle2 size={24} /></div>
+                    <div>
+                      <p className="text-slate-500 text-xs font-bold tracking-wider uppercase mb-0.5">Interviews / Offers</p>
+                      <p className="text-2xl font-black text-slate-900">
+                        {appliedJobs.filter(job => ['Interview', 'Offer', 'Hired'].includes(job.status)).length}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-bold text-slate-900 mb-5 uppercase tracking-wider text-xs">Recent Applications</h3>
+                
+                {loadingJobs ? (
+                  <div className="flex justify-center items-center py-20">
+                    <Loader2 className="animate-spin text-indigo-600" size={32} />
+                  </div>
+                ) : appliedJobs.length === 0 ? (
+                  <div className="text-center p-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
+                    <div className="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-slate-100">
+                      <Building2 size={24} className="text-slate-400" />
+                    </div>
+                    <h4 className="font-bold text-slate-900 text-lg mb-2">No applications yet</h4>
+                    <p className="text-slate-500 font-medium">Start exploring jobs and your applications will appear here.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {appliedJobs.map((app) => {
+                      let statusConfig = { color: 'text-slate-600', bg: 'bg-slate-100', icon: Clock };
+                      if (app.status === 'Applied') statusConfig = { color: 'text-blue-700', bg: 'bg-blue-50', icon: CheckCircle2 };
+                      if (app.status === 'Reviewing') statusConfig = { color: 'text-amber-700', bg: 'bg-amber-50', icon: Clock };
+                      if (app.status === 'Interview') statusConfig = { color: 'text-indigo-700', bg: 'bg-indigo-50', icon: ArrowRight };
+                      if (app.status === 'Offer' || app.status === 'Hired') statusConfig = { color: 'text-emerald-700', bg: 'bg-emerald-50', icon: CheckCircle2 };
+                      if (app.status === 'Rejected') statusConfig = { color: 'text-rose-700', bg: 'bg-rose-50', icon: XCircle };
+
+                      const StatusIcon = statusConfig.icon;
+
+                      return (
+                        <div key={app.id} className="group relative flex flex-col md:flex-row md:items-center justify-between p-6 bg-white border border-slate-200 rounded-2xl hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300">
+                          <div className="flex items-start gap-5">
+                            <div className="w-14 h-14 rounded-xl border border-slate-100 flex items-center justify-center bg-slate-50 overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform">
+                              <Building2 size={24} className="text-slate-400" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-slate-900 text-lg group-hover:text-indigo-700 transition-colors">{app.job_title}</h4>
+                              <p className="text-slate-500 font-medium mt-0.5">{app.company_name} • {app.location}</p>
+                              <p className="text-slate-400 text-xs font-semibold mt-2 flex items-center gap-1.5">
+                                <Calendar size={12} /> Applied on {new Date(app.applied_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-4 md:mt-0 flex items-center justify-between md:flex-col md:items-end gap-3">
+                            <div className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold ${statusConfig.bg} ${statusConfig.color}`}>
+                              <StatusIcon size={16} />
+                              {app.status}
+                            </div>
+                            {/* <button className="text-slate-400 hover:text-indigo-600 text-sm font-bold transition-colors flex items-center gap-1">
+                              View Details
+                            </button> */}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* --- TAB: BASIC INFO --- */}
             {activeTab === 'basic' && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-500">

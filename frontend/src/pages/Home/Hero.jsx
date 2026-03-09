@@ -4,7 +4,6 @@ import {
   ChevronRight
 
 } from 'lucide-react';
-import { Link } from 'lucide-react';
 import HeadButton from '../../components/common/HeadButton';
 import Title from '../../components/common/Title';
 import Content from '../../components/common/Content';
@@ -47,7 +46,7 @@ const HeroSection = () => {
 
           {/* Small Text Link */}
           <div className="mb-20 animate-in fade-in duration-1000 delay-500">
-            <a href="/business" className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors group">
+            <a href="/businesses" className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors group">
               FOR BUSINESSES
               <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </a>

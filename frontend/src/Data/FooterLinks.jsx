@@ -1,26 +1,23 @@
 export const footerLinks = {
-    services: [
-      { name: 'Skilling', href: '#' },
-      { name: 'Hiring', href: '#' },
-      { name: 'Training', href: '#' },
-      { name: 'Virtual TPO', href: '#' },
-    ],
-    company: [
-      { name: 'About us', href: '#' },
-      { name: 'Our Mission', href: '#' },
-      { name: 'Our Vision', href: '#' },
-      { name: 'Meet Our Team', href: '#' },
-    ],
-    resources: [
-      { name: 'LMS', href: '#'},
-      { name: 'Gallery', href: '#' },
-      { name: 'Blog', href: '#' },
-      { name: 'Our Intro Podcast', href: '#' },
-    ],
-    support: [
-      { name: 'Corporates', href: '#' },
-      { name: 'Privacy Policy', href: '#' },
-      { name: 'Contact Support', href: '#' },
-      { name: 'Our Programs', href: '#' },
-    ],
-  };
+  explore: [
+    { name: 'Jobs', href: '/jobs' },
+    { name: 'Freshers', href: '/freshers' },
+    { name: 'Career Path', href: '/career-path' },
+  ],
+  company: [
+    { name: 'About Us', href: '/about' },
+    { name: 'For Businesses', href: '/businesses' },
+     { name: 'Community', href: '/community' },
+  ],
+  resources: [
+    { name: 'Sales Learning', href: '/saleslearning' },
+    { name: 'Gallery', href: '/' },
+    { name: 'Workshops', href: '/saleslearning' }, 
+  ],
+  support: [
+   { name: 'Terms of Service', href: '/terms' },
+    { name: 'Privacy Policy', href: '/privacy-policy' },
+  { name: 'Login / Signup', href: '/auth' },
+  ],
+};
+

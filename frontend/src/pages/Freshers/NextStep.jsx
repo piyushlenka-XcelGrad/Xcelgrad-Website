@@ -6,6 +6,7 @@ import {
   Compass,
   Milestone
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const FreshersNextSteps = () => {
   const nextSteps = [
@@ -15,7 +16,8 @@ const FreshersNextSteps = () => {
       bgClass: "bg-indigo-50",
       borderHover: "hover:border-indigo-300",
       buttonColor: "text-indigo-600 group-hover:text-indigo-700",
-      shadowHover: "hover:shadow-[0_20px_40px_rgba(79,70,229,0.12)]"
+      shadowHover: "hover:shadow-[0_20px_40px_rgba(79,70,229,0.12)]",
+      link : ""
     },
     {
       title: "Apply for Internship",
@@ -23,7 +25,8 @@ const FreshersNextSteps = () => {
       bgClass: "bg-blue-50",
       borderHover: "hover:border-blue-300",
       buttonColor: "text-blue-600 group-hover:text-blue-700",
-      shadowHover: "hover:shadow-[0_20px_40px_rgba(59,130,246,0.12)]"
+      shadowHover: "hover:shadow-[0_20px_40px_rgba(59,130,246,0.12)]",
+      link : "/jobs"
     },
     {
       title: "Explore Entry-Level Roles",
@@ -31,7 +34,8 @@ const FreshersNextSteps = () => {
       bgClass: "bg-emerald-50",
       borderHover: "hover:border-emerald-300",
       buttonColor: "text-emerald-600 group-hover:text-emerald-700",
-      shadowHover: "hover:shadow-[0_20px_40px_rgba(16,185,129,0.12)]"
+      shadowHover: "hover:shadow-[0_20px_40px_rgba(16,185,129,0.12)]",
+      link : "/jobs"
     }
   ];
 
@@ -66,28 +70,29 @@ const FreshersNextSteps = () => {
           </p>
         </div>
 
-        {/* Action Cards Grid */}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
           {nextSteps.map((step, index) => (
             <button 
               key={index}
               className={`group flex flex-col items-center text-center p-8 md:p-10 bg-white border border-slate-200 rounded-[32px] transition-all duration-500 hover:-translate-y-2 cursor-pointer ${step.borderHover} ${step.shadowHover}`}
             >
-              {/* Icon */}
+          
               <div className={`w-20 h-20 shrink-0 rounded-[1.25rem] flex items-center justify-center mb-8 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 ${step.bgClass}`}>
                 {step.icon}
               </div>
               
-              {/* Title */}
+        
               <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-8 px-2 flex-grow">
                 {step.title}
               </h3>
-              
-              {/* Fake Text Button with Animated Arrow */}
+
+          <Link to={step.link}>
               <div className={`mt-auto inline-flex items-center gap-2 font-bold text-sm tracking-wide uppercase transition-colors ${step.buttonColor}`}>
                 Get Started
                 <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform duration-300" />
               </div>
+              </Link>
             </button>
           ))}
         </div>

@@ -7,6 +7,7 @@ import {
   Target, 
   UserCircle 
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ForProfessionals = () => {
   const features = [
@@ -73,11 +74,12 @@ const ForProfessionals = () => {
               <p className="text-lg text-slate-600 font-medium mb-10 leading-relaxed max-w-lg">
                 Join a structured ecosystem designed to elevate your career, map your skills to the right roles, and drive consistent, long-term success.
               </p>
-              
+               <Link to="/saleslearning">
               <button className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold transition-all shadow-lg hover:shadow-indigo-200 hover:-translate-y-1 active:scale-95 group">
                 Explore Opportunities
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
+              </Link>
             </div>
 
             {/* Right Content Area - Features Stack */}

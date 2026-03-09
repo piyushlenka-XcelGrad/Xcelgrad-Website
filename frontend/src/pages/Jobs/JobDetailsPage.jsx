@@ -421,7 +421,7 @@ const JobDetailsPage = () => {
     
     if (!token) {
       toast("Please sign in to apply for this job.", { icon: "👋" });
-      navigate("/login"); 
+      navigate("/auth"); 
       return;
     }
 
