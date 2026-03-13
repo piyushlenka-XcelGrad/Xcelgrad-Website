@@ -46,7 +46,8 @@ import axios from 'axios';
 
 const api = axios.create({
   // Ensure this points to your FastAPI backend
-  baseURL: 'http://127.0.0.1:8000/api/v1', 
+  // baseURL: 'http://127.0.0.1:8000/api/v1', 
+  baseURL: 'https://ats2-oj14.onrender.com/api/v1', 
 });
 
 // --- DYNAMIC TOKEN ATTACHMENT ---
