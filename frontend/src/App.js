@@ -6,11 +6,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import Hiring from './pages/Hiring/Hiring';
-import Training from './pages/Training/Training';
 import Home from './pages/Home/Home';
 import Job from './pages/Jobs/Job';
 import JobDetailsPage from './pages/Jobs/JobDetailsPage';
 import AuthPage from './pages/Login_Signup/Auth';
+// import Profile from './pages/Profile_Page/Profile.jsx';
 import Profile from './pages/Profile_Page/Profile';
 import Skilling from './pages/Skilling/Skilling';
 import About from "./pages/About/About"
@@ -41,7 +41,6 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/hiring" element={<Hiring />} />
-              <Route path="/training" element={<Training />} />
               <Route path="/jobs" element={<Job />} />
               <Route path="/app/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/auth" element={<AuthPage />} />
