@@ -8,7 +8,7 @@ export const founders = [
       bio: "Deepak Verma is a seasoned leader with 18+ years of experience across Agritech, B2B E-commerce, Banking, and Digital transformation. An alumnus of IIT Kharagpur and IIM Indore, he held leadership roles at Zomato’s Hyperpure and served as Agriculture Business Lead at ONDC. He has driven innovation in Indian agriculture by digitizing value chains and empowering farmers through scalable, tech-driven commerce.",
       credentials: ["IIT Kharagpur", "IIM Indore"],
       expertise: "Agritech • Digital Transformation • Supply Chain",
-      linkedin: "#"
+      linkedin: "https://www.linkedin.com/in/deepak-verma-7917868/"
     },
     {
       name: "Priyanka Singh",
@@ -17,6 +17,6 @@ export const founders = [
       bio: "Priyanka Singh brings 18+ years of experience in Financial services, Edtech, and IT Services. A graduate of IIT Kanpur and IIM Kolkata, she began her career at Tata Steels before transitioning to roles at Barclays, BlackRock, and Air India. Her focus has been driving Digital transformation and delivering strategic solutions in large-scale enterprises. She has been instrumental in shaping different business foundations.",
       credentials: ["IIT Kanpur", "IIM Kolkata"],
       expertise: "Financial Services • IT Strategy • EdTech",
-      linkedin: "#"
+      linkedin: "https://www.linkedin.com/in/priyanka555/"
     }
   ];

@@ -1,30 +1,14 @@
-// // src/api.js
-// import axios from "axios";
-
-// const api = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api/v1", // FastAPI base URL
-// });
-
-// // attach JWT token (if present) on every request
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
-
-// export default api;
 
 
 import axios from 'axios';
 
 const api = axios.create({
   // Ensure this points to your FastAPI backend
-  baseURL: 'http://127.0.0.1:8000/api/v1', 
+  // baseURL: 'http://127.0.0.1:8000/api/v1', 
+  baseURL: 'https://ats2-oj14.onrender.com/api/v1', 
 });
 
-// --- ADD THIS INTERCEPTOR ---
+// --- DYNAMIC TOKEN ATTACHMENT ---
 api.interceptors.request.use(
   (config) => {
     // 1. Grab the token from localStorage right before the request is sent
@@ -42,15 +26,14 @@ api.interceptors.request.use(
   }
 );
 
-// Optional but highly recommended: Auto-logout on 401 errors
+// --- AUTO-LOGOUT ON 401 ERRORS ---
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Token expired or is invalid
+      // RESTORED: Token is actually invalid or expired now, so clear it
       localStorage.removeItem('user_token');
-      // You can redirect to login here if you are not using React Router's context
-      // window.location.href = '/auth'; 
+      window.location.href = '/auth'; 
     }
     return Promise.reject(error);
   }
