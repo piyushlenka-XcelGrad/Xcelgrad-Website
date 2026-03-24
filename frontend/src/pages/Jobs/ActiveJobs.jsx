@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import { 
   MapPin, 
@@ -24,15 +23,12 @@ const App = () => {
   // Filter States
   const [selectedLocations, setSelectedLocations] = useState([]); 
   const [selectedLevels, setSelectedLevels] = useState([]);
-  
-  // Salary Filter States
-  const [salaryFormat, setSalaryFormat] = useState('All'); // 'All', 'Yearly', or 'Monthly'
   const [selectedSalaryRanges, setSelectedSalaryRanges] = useState([]); 
   
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [selectedJobIds, setSelectedJobIds] = useState([]);
 
-  // --- UPDATED: Experience Categories ---
+  // --- Experience Categories ---
   const EXP_LEVELS = [
     'Entry Level (0-2 years)', 
     'Mid Level (3-5 years)', 
@@ -40,21 +36,14 @@ const App = () => {
     'Executive (10+ years)'
   ];
   
-  // --- UPDATED: Dynamic Salary Ranges Definition ---
-  const SALARY_RANGES = {
-    Yearly: [
-      { label: '1 - 6 Lakhs', min: 1, max: 600000 },
-      { label: '7 - 15 Lakhs', min: 600001, max: 1500000 },
-      { label: '15 - 30 Lakhs', min: 1500001, max: 3000000 },
-      { label: '30+ Lakhs', min: 3000001, max: Infinity }
-    ],
-    Monthly: [
-      { label: '0k - 5k', min: 0, max: 5000 },
-      { label: '5k - 10k', min: 5001, max: 10000 },
-      { label: '10k - 25k', min: 10001, max: 25000 },
-      { label: '25k+', min: 25001, max: Infinity }
-    ]
-  };
+  // --- Dynamic Salary Ranges Definition ---
+  // FIXED: 1-6 Lakhs now starts at 0 to safely include 60,000 yearly jobs
+  const SALARY_RANGES = [
+    { label: '1 - 6 Lakhs', min: 0, max: 600000 },
+    { label: '7 - 15 Lakhs', min: 600001, max: 1500000 },
+    { label: '15 - 30 Lakhs', min: 1500001, max: 3000000 },
+    { label: '30+ Lakhs', min: 3000001, max: Infinity }
+  ];
 
   const navigate = useNavigate();
 
@@ -76,21 +65,73 @@ const App = () => {
     fetchActiveJobs();
   }, []);
 
-  // --- HELPERS ---
-  const getExperienceYears = (expString) => {
-    if (!expString) return -1;
-    const normalized = String(expString).toLowerCase().replace(/\s/g, ''); 
-    if (normalized.includes('fresher')) return 0;
-    const match = normalized.match(/(\d+)/); 
-    return match ? parseInt(match[0], 10) : -1;
+
+  // --- SMART PARSER: Experience ---
+  const parseExperience = (expString) => {
+    if (!expString) return null;
+    const str = String(expString).toLowerCase();
+    
+    // Catch freshers and N/A strings
+    if (str.includes('fresher') || str.includes('n/a')) {
+      return { min: 0, max: 0 };
+    }
+    
+    const match = str.match(/\d+(?:\.\d+)?/g);
+    if (!match) return null;
+    
+    const nums = match.map(Number);
+    let eMin = nums[0];
+    let eMax = nums.length > 1 ? nums[1] : nums[0];
+    
+    // Failsafe sort
+    if (eMin > eMax) {
+      const temp = eMin; eMin = eMax; eMax = temp;
+    }
+    return { min: eMin, max: eMax };
   };
 
-  // Extracts just the number from the amount (e.g., 500000)
-  const getSalaryNumber = (salaryAmount) => {
-    if (salaryAmount === undefined || salaryAmount === null) return -1;
-    const match = String(salaryAmount).replace(/[^0-9]/g, '');
-    return match ? parseInt(match, 10) : -1;
+  // --- SMART PARSER: Salary ---
+  const parseSalary = (amountStr, typeStr) => {
+    const str1 = String(amountStr || '').toLowerCase();
+    const str2 = String(typeStr || '').toLowerCase();
+    const fullStr = `${str1} ${str2}`;
+    
+    if (!fullStr.trim() || fullStr.includes('confidential')) return null;
+
+    // Remove commas to safely extract numbers
+    const numMatches = fullStr.replace(/,/g, '').match(/\d+(?:\.\d+)?/g);
+    if (!numMatches) return null;
+
+    const nums = numMatches.map(Number);
+    let sMin = nums[0];
+    let sMax = nums.length > 1 ? nums[1] : nums[0];
+    
+    // Failsafe sort
+    if (sMin > sMax) {
+        const temp = sMin; sMin = sMax; sMax = temp;
+    }
+
+    // Strip everything except letters to check for LPA/Month safely
+    const cleanStr = fullStr.replace(/[^a-z]/g, ''); 
+    const isLPA = cleanStr.includes('lpa') || cleanStr.includes('lakh') || cleanStr.includes('lac');
+    const isMonthly = cleanStr.includes('month');
+
+    // Standardize to Yearly
+    if (isLPA) {
+        sMin *= 100000;
+        sMax *= 100000;
+    } else if (isMonthly) {
+        sMin *= 12;
+        sMax *= 12;
+    } else if (sMax > 0 && sMax < 1000) { 
+        // Catch isolated small numbers (e.g. "25")
+        sMin *= 100000;
+        sMax *= 100000;
+    }
+
+    return { min: sMin, max: sMax };
   };
+
 
   // --- DYNAMIC LOCATION EXTRACTION ---
   const uniqueLocations = useMemo(() => {
@@ -101,7 +142,8 @@ const App = () => {
     return [...new Set(locations)].sort();
   }, [jobs]);
 
-  // --- FILTERING LOGIC ---
+
+  // --- CORE FILTERING LOGIC ---
   const filteredJobs = useMemo(() => {
     return jobs.filter(job => {
       // 1. Search Filter
@@ -112,55 +154,45 @@ const App = () => {
       const matchesLocation = selectedLocations.length === 0 || 
                               (job.location && selectedLocations.includes(job.location.trim()));
       
-      // 3. UPDATED: Experience Filter Logic 
+      // 3. Experience Overlap Filter
       const matchesLevel = selectedLevels.length === 0 || selectedLevels.some(level => {
-        const years = getExperienceYears(job.experience_bracket); 
-        if (years === -1) return false; 
-        switch (level) {
-          case 'Entry Level (0-2 years)': return years >= 0 && years <= 2;
-          case 'Mid Level (3-5 years)': return years >= 3 && years <= 5;  
-          case 'Senior (6-10 years)': return years >= 6 && years <= 10;     
-          case 'Executive (10+ years)': return years > 10;               
-          default: return false;
-        }
+        const jobExp = parseExperience(job.experience_bracket); 
+        if (!jobExp) return false; 
+        
+        let fMin = 0, fMax = 99;
+        if (level === 'Entry Level (0-2 years)') { fMin = 0; fMax = 2; }
+        else if (level === 'Mid Level (3-5 years)') { fMin = 3; fMax = 5; }
+        else if (level === 'Senior (6-10 years)') { fMin = 6; fMax = 10; }
+        else if (level === 'Executive (10+ years)') { fMin = 11; fMax = 99; }
+        
+        return jobExp.min <= fMax && jobExp.max >= fMin;
       });
 
-      // 4. Salary Filter 
-      let matchesSalary = true;
-      
-      if (salaryFormat !== 'All') {
-        const isCorrectFormat = job.salary_type && job.salary_type.toLowerCase().includes(salaryFormat.toLowerCase());
-        
-        if (!isCorrectFormat) {
-          matchesSalary = false; 
-        } else if (selectedSalaryRanges.length > 0) {
-          const salaryNum = getSalaryNumber(job.salary_amount);
-          
-          matchesSalary = selectedSalaryRanges.some(selectedLabel => {
-            const rangeDef = SALARY_RANGES[salaryFormat].find(r => r.label === selectedLabel);
-            if (!rangeDef) return false;
-            return salaryNum >= rangeDef.min && salaryNum <= rangeDef.max;
-          });
-        }
-      }
+      // 4. Salary Overlap Filter
+      const matchesSalary = selectedSalaryRanges.length === 0 || selectedSalaryRanges.some(selectedLabel => {
+        const rangeDef = SALARY_RANGES.find(r => r.label === selectedLabel);
+        if (!rangeDef) return false;
+
+        const jobSal = parseSalary(job.salary_amount, job.salary_type);
+        if (!jobSal) return false; // Hides "Confidential" jobs if a salary is actively checked
+
+        // Math overlap check
+        return jobSal.min <= rangeDef.max && jobSal.max >= rangeDef.min;
+      });
 
       return matchesSearch && matchesLocation && matchesLevel && matchesSalary;
     });
-  }, [jobs, searchQuery, selectedLocations, selectedLevels, salaryFormat, selectedSalaryRanges]);
+  }, [jobs, searchQuery, selectedLocations, selectedLevels, selectedSalaryRanges]);
 
+
+  // --- UI HANDLERS ---
   const toggleFilter = (item, selectedList, setList) => {
     setList(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
-  };
-
-  const handleSalaryFormatChange = (format) => {
-    setSalaryFormat(format);
-    setSelectedSalaryRanges([]); 
   };
 
   const clearFilters = () => {
     setSelectedLocations([]);
     setSelectedLevels([]);
-    setSalaryFormat('All'); 
     setSelectedSalaryRanges([]); 
     setSearchQuery("");
   };
@@ -177,7 +209,7 @@ const App = () => {
     setSelectedJobIds(prev => prev.includes(id) ? prev.filter(jobId => jobId !== id) : [...prev, id]);
   };
 
-  const hasActiveFilters = selectedLocations.length > 0 || selectedLevels.length > 0 || salaryFormat !== 'All' || searchQuery !== "";
+  const hasActiveFilters = selectedLocations.length > 0 || selectedLevels.length > 0 || selectedSalaryRanges.length > 0 || searchQuery !== "";
 
   return (
     <div className="min-h-screen mt-16 overflow-x-hidden bg-slate-50 text-slate-900 font-sans selection:bg-blue-100">
@@ -290,47 +322,28 @@ const App = () => {
 
               {/* Dynamic Salary Filter */}
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Salary Format</h3>
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Salary Range</h3>
                 
-                {/* Format Toggle Tabs */}
-                <div className="flex bg-slate-100 p-1 rounded-lg mb-4">
-                  <button
-                    className={`flex-1 py-1.5 text-xs sm:text-[13px] font-semibold rounded-md transition-all ${salaryFormat === 'All' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-                    onClick={() => handleSalaryFormatChange('All')}
-                  >All</button>
-                  <button
-                    className={`flex-1 py-1.5 text-xs sm:text-[13px] font-semibold rounded-md transition-all ${salaryFormat === 'Yearly' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-                    onClick={() => handleSalaryFormatChange('Yearly')}
-                  >Yearly</button>
-                  <button
-                    className={`flex-1 py-1.5 text-xs sm:text-[13px] font-semibold rounded-md transition-all ${salaryFormat === 'Monthly' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}
-                    onClick={() => handleSalaryFormatChange('Monthly')}
-                  >Monthly</button>
+                <div className="space-y-3 mt-4">
+                  {SALARY_RANGES.map((range) => (
+                    <label key={range.label} className="flex items-center gap-3 cursor-pointer group">
+                      <div className="relative flex items-center justify-center shrink-0">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedSalaryRanges.includes(range.label)}
+                          onChange={() => toggleFilter(range.label, selectedSalaryRanges, setSelectedSalaryRanges)}
+                          className="peer appearance-none w-5 h-5 bg-black border-2 border-slate-300 rounded-[6px] checked:bg-blue-600 checked:border-blue-600 cursor-pointer transition-all hover:border-blue-400"
+                        />
+                        <svg className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" viewBox="0 0 14 10" fill="none">
+                          <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                      <span className="text-sm sm:text-[15px] text-slate-600 font-medium group-hover:text-slate-900 transition-colors break-words">
+                        {range.label}
+                      </span>
+                    </label>
+                  ))}
                 </div>
-
-                {/* Range Checkboxes (Only shows when Yearly or Monthly is selected) */}
-                {salaryFormat !== 'All' && (
-                  <div className="space-y-3 mt-4">
-                    {SALARY_RANGES[salaryFormat].map((range) => (
-                      <label key={range.label} className="flex items-center gap-3 cursor-pointer group">
-                        <div className="relative flex items-center justify-center shrink-0">
-                          <input 
-                            type="checkbox" 
-                            checked={selectedSalaryRanges.includes(range.label)}
-                            onChange={() => toggleFilter(range.label, selectedSalaryRanges, setSelectedSalaryRanges)}
-                            className="peer appearance-none w-5 h-5 bg-black border-2 border-slate-300 rounded-[6px] checked:bg-blue-600 checked:border-blue-600 cursor-pointer transition-all hover:border-blue-400"
-                          />
-                          <svg className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" viewBox="0 0 14 10" fill="none">
-                            <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                        <span className="text-sm sm:text-[15px] text-slate-600 font-medium group-hover:text-slate-900 transition-colors break-words">
-                          {range.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                )}
               </div>
 
             </div>
@@ -431,7 +444,7 @@ const App = () => {
                         </div>
                         
                         <span className="inline-flex items-center justify-center bg-blue-50 text-blue-700 border border-blue-100 text-xs sm:text-[13px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap self-start shrink-0">
-                          {job.type || "Full-time"}
+                          {job?.type}
                         </span>
                       </div>
 

@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ded1af64.css",
+    "main.js": "/static/js/main.4bcc6f2a.js",
+    "static/media/Deepak_Verma.png": "/static/media/Deepak_Verma.a7c4c5ad455a09a1100d.png",
+    "static/media/xcelgrad_logo2.png": "/static/media/xcelgrad_logo2.c6e075562d416e5c40da.png",
+    "static/media/priyanka.jpg": "/static/media/priyanka.865353c8074c66b14ecd.jpg",
+    "index.html": "/index.html",
+    "main.ded1af64.css.map": "/static/css/main.ded1af64.css.map",
+    "main.4bcc6f2a.js.map": "/static/js/main.4bcc6f2a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ded1af64.css",
+    "static/js/main.4bcc6f2a.js"
+  ]
+}
