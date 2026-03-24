@@ -2,7 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
+import { initGA , trackPageView } from './utils/analytics';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import Hiring from './pages/Hiring/Hiring';
@@ -30,11 +32,29 @@ const theme = createTheme({
   },
 });
 
+const AnalyticsTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Every time the URL changes, tell Google Analytics
+    trackPageView(location.pathname + location.search);
+  }, [location]);
+
+  return null; // This doesn't render anything on the screen
+};
+
 function App() {
+
+ useEffect(() => {
+    initGA();
+  }, []);
+
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
+        <AnalyticsTracker />
         <div id="root" className="min-h-screen flex flex-col">
           <Navbar />
           <main className="flex-grow">
