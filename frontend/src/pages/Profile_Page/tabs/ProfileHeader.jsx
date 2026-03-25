@@ -24,7 +24,7 @@ export default function ProfileHeader({ profile, photoInputRef, handlePhotoUploa
     if (!url) return '';
     if (url.startsWith('http')) return url;
     const backendDomain = new URL(api.defaults.baseURL).origin; 
-    return `${backendDomain}${url}`;
+    return `${backendDomain}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
   return (

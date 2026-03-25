@@ -18,7 +18,7 @@ import {
 import toast from "react-hot-toast";
 import api from "../../api"; 
 
-/* -------------------- Reusable Components -------------------- */
+
 const InfoBadge = ({ icon: Icon, label }) => (
   <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-semibold shadow-sm">
     <Icon size={16} className="text-indigo-600" />
@@ -179,7 +179,7 @@ const JobDetailsPage = () => {
 
               <div className="w-full min-w-0">
                 <div className="overflow-x-auto pb-2">
-                  <div className="prose max-w-none text-slate-600 break-words [word-break:break-word] [&_table]:w-full [&_table]:mb-4 [&_img]:max-w-full [&_img]:h-auto"
+                  <div className="prose max-w-none text-slate-600 break-words [word-break:break-word] [&_table]:w-full [&_table]:mb-4 [&_img]:max-w-full [&_img]:h-auto whitespace-pre-wrap"
                     dangerouslySetInnerHTML={{ __html: job.description }}
                   />
                 </div>
@@ -193,13 +193,12 @@ const JobDetailsPage = () => {
                 Expertise Required
               </h3>
 
-              <div className="flex flex-wrap gap-3">
-                {job.key_skills?.split(",").map((skill, i) => (
-                  <span key={i} className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700">
-                    <CheckCircle2 size={16} className="text-emerald-500" />
-                    {skill.trim()}
-                  </span>
-                ))}
+              <div className="w-full min-w-0">
+                <div className="overflow-x-auto pb-2">
+                  <div className="prose max-w-none text-slate-600 break-words [word-break:break-word] [&_table]:w-full [&_table]:mb-4 [&_img]:max-w-full [&_img]:h-auto whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{ __html: job.key_skills }}
+                  />
+                </div>
               </div>
             </div>
           </section>
@@ -216,18 +215,24 @@ const JobDetailsPage = () => {
                   </div>
 
                   <div className="divide-y divide-slate-800 border-y border-slate-800">
-                    <div className="flex items-center justify-between py-4">
-                      <span className="text-black text-sm">Total Openings</span>
-                      <span className="font-bold text-black text-lg">{job.positions}</span>
-                    </div>
-                    <div className="flex items-center justify-between py-4">
-                      <span className="text-black text-sm">Interview Rounds</span>
-                      <span className="font-semibold">{job.interview_rounds}</span>
-                    </div>
-                    <div className="flex items-center justify-between py-4">
-                      <span className="text-black text-sm">Notice Period</span>
-                      <span className="font-semibold text-emerald-400">{job.joining_preference}</span>
-                    </div>
+                    {job.positions ? (
+                      <div className="flex items-center justify-between py-4">
+                        <span className="text-black text-sm">Total Openings</span>
+                        <span className="font-bold text-black text-lg">{job.positions}</span>
+                      </div>
+                    ) : null}
+                    {job.interview_rounds ? (
+                      <div className="flex items-center justify-between py-4">
+                        <span className="text-black text-sm">Interview Rounds</span>
+                        <span className="font-semibold">{job.interview_rounds}</span>
+                      </div>
+                    ) : null}
+                    {job.joining_preference ? (
+                      <div className="flex items-center justify-between py-4">
+                        <span className="text-black text-sm">Notice Period</span>
+                        <span className="font-semibold text-emerald-400">{job.joining_preference}</span>
+                      </div>
+                    ) : null}
                   </div>
 
                   {/* --- CTA Section --- */}
@@ -267,9 +272,14 @@ const JobDetailsPage = () => {
                 <p className="text-sm text-slate-600 leading-relaxed">
                   Need clarification about the hiring process, interview stages, or role expectations? Our talent team is ready to assist you.
                 </p>
-                <button className="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition">
+                <a 
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=xcelgrad@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-block text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition"
+                >
                   Contact Support →
-                </button>
+                </a>
               </div>
 
             </div>
