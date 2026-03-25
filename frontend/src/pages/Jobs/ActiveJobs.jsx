@@ -423,7 +423,7 @@ const App = () => {
                           <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 shrink-0">
                             <IndianRupee size={14} className="text-slate-400 shrink-0" />
                             <span>
-                              ₹{job.salary_amount} {job.salary_type ? `/ ${job.salary_type}` : ""}
+                              {job.salary_amount} {job.salary_type ? `/ ${job.salary_type}` : ""}
                             </span>
                           </div>
                         )}
