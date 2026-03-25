@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -14,17 +11,20 @@ import {
   User,
   AlertCircle,
   Loader2,
+  IndianRupee
 } from "lucide-react";
 import toast from "react-hot-toast";
-import api from "../../api"; 
+import api from "../../api";
 
-
-const InfoBadge = ({ icon: Icon, label }) => (
-  <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-semibold shadow-sm">
-    <Icon size={16} className="text-indigo-600" />
-    <span>{label}</span>
-  </div>
-);
+const InfoBadge = ({ icon: Icon, label }) => {
+  if (!label) return null;
+  return (
+    <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-semibold shadow-sm">
+      <Icon size={16} className="text-indigo-600" />
+      <span>{label}</span>
+    </div>
+  );
+};
 
 const SkeletonLoader = () => (
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
@@ -68,19 +68,16 @@ const JobDetailsPage = () => {
     }
   }, [id]);
 
-  // --- UPDATED: Fetch Profile AND Application Status ---
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("user_token");
       if (token) {
         try {
-          // 1. Fetch the profile to check completion %
           const profileRes = await api.get("/website/profile/me");
           setProfile(profileRes.data);
 
-          // 2. Fetch the application status for this specific job
           const statusRes = await api.get(`/website/jobs/${id}/check-application`);
-          setHasApplied(statusRes.data.applied); // Sets to true if they already applied
+          setHasApplied(statusRes.data.applied);
         } catch (err) {
           console.error("User data fetch error. Token might be expired.");
         }
@@ -91,7 +88,6 @@ const JobDetailsPage = () => {
     fetchJobDetails();
   }, [id, fetchJobDetails]);
 
-  // --- Quick Apply Logic ---
   const handleQuickApply = async () => {
     const token = localStorage.getItem("user_token");
     
@@ -136,6 +132,21 @@ const JobDetailsPage = () => {
 
   const { job } = state;
 
+  // Reusable CSS classes for formatting ReactQuill HTML output gracefully
+  const htmlContentClasses = `
+    text-slate-600 leading-relaxed break-words w-full
+    [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:mt-2
+    [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_ol]:mt-2
+    [&_li]:mb-1.5 [&_li::marker]:text-slate-400
+    [&_p]:mb-4 last:[&_p]:mb-0
+    [&_strong]:font-bold [&_b]:font-bold text-slate-800
+    [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:text-slate-900
+    [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:text-slate-900
+    [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_h3]:text-slate-900
+    [&_a]:text-indigo-600 [&_a]:underline hover:[&_a]:text-indigo-800
+    [&_table]:w-full [&_table]:mb-4 [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg
+  `;
+
   return (
     <main className="bg-slate-50 min-h-screen py-10 mt-16 sm:py-14">
       <div className="absolute inset-0 h-[420px] bg-gradient-to-b from-indigo-100/40 to-transparent pointer-events-none" />
@@ -151,118 +162,144 @@ const JobDetailsPage = () => {
             {/* Header */}
             <header className="space-y-6">
               <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-1.5 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                  {job.industry || "General"}
-                </span>
-                <span className="px-4 py-1.5 bg-white border border-slate-200 text-slate-500 text-xs font-semibold rounded-full">
-                  Ref: #{job.job_id || id.slice(0, 8)}
-                </span>
+                {job.industry && (
+                  <span className="px-4 py-1.5 bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider rounded-full">
+                    {job.industry}
+                  </span>
+                )}
+                {job.job_id && (
+                  <span className="px-4 py-1.5 bg-white border border-slate-200 text-slate-500 text-xs font-semibold rounded-full">
+                    Ref: #{job.job_id}
+                  </span>
+                )}
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
-                {job.name}
-              </h1>
+              {job.name && (
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
+                  {job.name}
+                </h1>
+              )}
 
               <div className="flex flex-wrap gap-3">
-                <InfoBadge icon={MapPin} label={job.location} />
-                <InfoBadge icon={Briefcase} label={job.experience_bracket} />
-                <InfoBadge icon={CircleDollarSign} label={job.salary_amount} />
+                {job.location && <InfoBadge icon={MapPin} label={job.location} />}
+                {job.experience_bracket && <InfoBadge icon={Briefcase} label={job.experience_bracket} />}
+                {job.salary_amount && (
+                  <InfoBadge 
+                    icon={IndianRupee} 
+                    label={`₹${job.salary_amount}${job.salary_type ? ` / ${job.salary_type}` : ""}`} 
+                  />
+                )}
               </div>
             </header>
 
-            {/* Description */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <ShieldCheck className="text-indigo-600" />
-                Role Description
-              </h3>
-
-              <div className="w-full min-w-0">
-                <div className="overflow-x-auto pb-2">
-                  <div className="prose max-w-none text-slate-600 break-words [word-break:break-word] [&_table]:w-full [&_table]:mb-4 [&_img]:max-w-full [&_img]:h-auto whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{ __html: job.description }}
-                  />
-                </div>
+            {/* Description (Rich Text HTML) */}
+            {job.description && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                  <ShieldCheck className="text-indigo-600" />
+                  Role Description
+                </h3>
+                <div 
+                  className={htmlContentClasses}
+                  dangerouslySetInnerHTML={{ __html: job.description }}
+                />
               </div>
-            </div>
+            )}
 
-            {/* Skills */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                <Zap className="text-indigo-600" />
-                Expertise Required
-              </h3>
+            {/* Skills (Comma-Separated Grid) */}
+            {job.key_skills && (
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                  <Zap className="text-indigo-600" />
+                  Expertise Required
+                </h3>
+                
+                {/* Parse comma-separated skills and display them with CheckMarks */}
+                <div className="flex flex-wrap gap-3 mt-2">
+                  {job.key_skills.split(",").map((skill, index) => {
+                    const trimmedSkill = skill.trim();
+                    if (!trimmedSkill) return null; // Skip empty strings 
 
-              <div className="w-full min-w-0">
-                <div className="overflow-x-auto pb-2">
-                  <div className="prose max-w-none text-slate-600 break-words [word-break:break-word] [&_table]:w-full [&_table]:mb-4 [&_img]:max-w-full [&_img]:h-auto whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{ __html: job.key_skills }}
-                  />
+                    return (
+                      <div 
+                        key={index} 
+                        className="flex items-center gap-2.5 bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl shadow-sm hover:border-indigo-200 hover:bg-indigo-50/50 transition-colors"
+                      >
+                        <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
+                        <span className="font-semibold text-slate-700 text-sm">
+                          {trimmedSkill}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
+
               </div>
-            </div>
+            )}
           </section>
 
           {/* ---------------- Sidebar ---------------- */}
           <aside className="space-y-8">
             <div className="lg:sticky lg:top-8 space-y-8">
 
-              <div className="relative overflow-hidden rounded-3xl bg-white text-black shadow-2xl border border-slate-800">
-                <div className="relative p-6 sm:p-8">
-                  <div className="mb-8">
-                    <h4 className="text-xl font-extrabold tracking-tight">Position Details</h4>
-                    <p className="text-black text-sm mt-1">Key information about this opportunity</p>
-                  </div>
+              {(job.positions || job.interview_rounds || job.joining_preference) && (
+                <div className="relative overflow-hidden rounded-3xl bg-white text-black shadow-2xl border border-slate-800">
+                  <div className="relative p-6 sm:p-8">
+                    <div className="mb-8">
+                      <h4 className="text-xl font-extrabold tracking-tight">Position Details</h4>
+                      <p className="text-black text-sm mt-1">Key information about this opportunity</p>
+                    </div>
 
-                  <div className="divide-y divide-slate-800 border-y border-slate-800">
-                    {job.positions ? (
-                      <div className="flex items-center justify-between py-4">
-                        <span className="text-black text-sm">Total Openings</span>
-                        <span className="font-bold text-black text-lg">{job.positions}</span>
-                      </div>
-                    ) : null}
-                    {job.interview_rounds ? (
-                      <div className="flex items-center justify-between py-4">
-                        <span className="text-black text-sm">Interview Rounds</span>
-                        <span className="font-semibold">{job.interview_rounds}</span>
-                      </div>
-                    ) : null}
-                    {job.joining_preference ? (
-                      <div className="flex items-center justify-between py-4">
-                        <span className="text-black text-sm">Notice Period</span>
-                        <span className="font-semibold text-emerald-400">{job.joining_preference}</span>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {/* --- CTA Section --- */}
-                  <div className="mt-8 space-y-3">
-                    <button
-                      onClick={handleQuickApply}
-                      disabled={applying || hasApplied}
-                      className={`block w-full text-center py-3.5 text-white font-bold tracking-wide rounded-xl transition-all shadow-lg active:scale-[0.98] ${
-                        hasApplied 
-                          ? 'bg-emerald-500 shadow-emerald-500/40 cursor-not-allowed' 
-                          : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/40 hover:shadow-indigo-900/60'
-                      }`}
-                    >
-                      {applying ? (
-                        <span className="flex items-center justify-center gap-2"><Loader2 className="animate-spin" size={20}/> Applying...</span>
-                      ) : hasApplied ? (
-                        <span className="flex items-center justify-center gap-2"><CheckCircle2 size={20} /> Already Applied</span>
-                      ) : (
-                         "⚡ Quick Apply (1-Click)"
+                    <div className="divide-y divide-slate-800 border-y border-slate-800">
+                      {job.positions && (
+                        <div className="flex items-center justify-between py-4">
+                          <span className="text-black text-sm">Total Openings</span>
+                          <span className="font-bold text-black text-lg">{job.positions}</span>
+                        </div>
                       )}
-                    </button>
+                      {job.interview_rounds && (
+                        <div className="flex items-center justify-between py-4">
+                          <span className="text-black text-sm">Interview Rounds</span>
+                          <span className="font-semibold">{job.interview_rounds}</span>
+                        </div>
+                      )}
+                      {job.joining_preference && (
+                        <div className="flex items-center justify-between py-4">
+                          <span className="text-black text-sm">Notice Period</span>
+                          <span className="font-semibold text-emerald-400">{job.joining_preference}</span>
+                        </div>
+                      )}
+                    </div>
 
-                    {job.google_form_id && !hasApplied && (
-                      <a href={job.google_form_id} target="_blank" rel="noopener noreferrer" className="block w-full text-center py-3 text-sm text-slate-600 font-semibold hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors border border-slate-200">
-                        Or apply via External Form
-                      </a>
-                    )}
+                    {/* --- CTA Section --- */}
+                    <div className="mt-8 space-y-3">
+                      <button
+                        onClick={handleQuickApply}
+                        disabled={applying || hasApplied}
+                        className={`block w-full text-center py-3.5 text-white font-bold tracking-wide rounded-xl transition-all shadow-lg active:scale-[0.98] ${
+                          hasApplied 
+                            ? 'bg-emerald-500 shadow-emerald-500/40 cursor-not-allowed' 
+                            : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/40 hover:shadow-indigo-900/60'
+                        }`}
+                      >
+                        {applying ? (
+                          <span className="flex items-center justify-center gap-2"><Loader2 className="animate-spin" size={20}/> Applying...</span>
+                        ) : hasApplied ? (
+                          <span className="flex items-center justify-center gap-2"><CheckCircle2 size={20} /> Already Applied</span>
+                        ) : (
+                           "⚡ Quick Apply (1-Click)"
+                        )}
+                      </button>
+
+                      {job.google_form_id && !hasApplied && (
+                        <a href={job.google_form_id} target="_blank" rel="noopener noreferrer" className="block w-full text-center py-3 text-sm text-slate-600 font-semibold hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors border border-slate-200">
+                          Or apply via External Form
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 bg-indigo-600/10 text-indigo-600 rounded-xl flex items-center justify-center mb-4">

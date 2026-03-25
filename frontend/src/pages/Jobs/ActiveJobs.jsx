@@ -7,7 +7,8 @@ import {
   Building2,
   X,
   ArrowRight,
-  Loader2
+  Loader2,
+  IndianRupee // <-- Imported IndianRupee icon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import HeadButton from '../../components/common/HeadButton';
@@ -361,8 +362,6 @@ const App = () => {
           {/* Job Listings Column */}
           <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
             
-
-
             {/* Jobs List */}
             {loading ? (
               <div className="bg-white border border-slate-100 rounded-2xl p-12 text-center text-slate-500 flex flex-col items-center shadow-sm">
@@ -377,12 +376,10 @@ const App = () => {
                     className="bg-white border-2 border-slate-100 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-5 shadow-sm hover:shadow-md transition-all duration-300"
                   >
 
-
                     {/* Job Info */}
                     <div className="flex-1 flex flex-col min-w-0">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 gap-3">
                         <div className="flex items-start gap-3 min-w-0">
-
                           
                           <div className="min-w-0">
                             <h3 
@@ -391,31 +388,53 @@ const App = () => {
                             >
                               {job.name}
                             </h3>
-                            <div className="flex items-center gap-2 text-sm sm:text-[15px] font-medium text-slate-600">
-                              <Building2 size={16} className="text-slate-400 shrink-0" />
-                              <span className="truncate">{job.industry || "Company Name"}</span>
-                            </div>
+                            
+                            {/* Render Industry only if it exists */}
+                            {job.industry && (
+                              <div className="flex items-center gap-2 text-sm sm:text-[15px] font-medium text-slate-600">
+                                <Building2 size={16} className="text-slate-400 shrink-0" />
+                                <span className="truncate">{job.industry}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         
-                        <span className="inline-flex items-center justify-center bg-blue-50 text-blue-700 border border-blue-100 text-xs sm:text-[13px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap self-start shrink-0">
-                          {job?.type}
-                        </span>
+                        {/* Render Job Type only if it exists */}
+                        {job?.type && (
+                          <span className="inline-flex items-center justify-center bg-blue-50 text-blue-700 border border-blue-100 text-xs sm:text-[13px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap self-start shrink-0">
+                            {job.type}
+                          </span>
+                        )}
                       </div>
 
-                      {/* Meta Tags */}
+                      {/* Meta Tags - Conditionals added here */}
                       <div className="flex flex-wrap items-center gap-2 sm:gap-x-4 sm:gap-y-3 mt-2 sm:mt-4 mb-4 text-xs sm:text-[14px] text-slate-600 font-medium">
-                        <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 min-w-0">
-                          <MapPin size={14} className="text-slate-400 shrink-0" />
-                          <span className="truncate max-w-[120px] sm:max-w-none">{job.location || "Location not specified"}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 shrink-0">
-                          {job.salary_amount ? `${job.salary_amount} ${job.salary_type ? `/ ${job.salary_type}` : ""}` : "Confidential"}
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 shrink-0">
-                          <Briefcase size={14} className="text-slate-400 shrink-0" />
-                          {job.experience_bracket || "Experience N/A"}
-                        </div>
+                        
+                        {/* Render Location only if it exists */}
+                        {job.location && (
+                          <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 min-w-0">
+                            <MapPin size={14} className="text-slate-400 shrink-0" />
+                            <span className="truncate max-w-[120px] sm:max-w-none">{job.location}</span>
+                          </div>
+                        )}
+                        
+                        {/* Render Salary only if it exists, formatted with Indian Rupee */}
+                        {job.salary_amount && (
+                          <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 shrink-0">
+                            <IndianRupee size={14} className="text-slate-400 shrink-0" />
+                            <span>
+                              ₹{job.salary_amount} {job.salary_type ? `/ ${job.salary_type}` : ""}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Render Experience only if it exists */}
+                        {job.experience_bracket && (
+                          <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-100 shrink-0">
+                            <Briefcase size={14} className="text-slate-400 shrink-0" />
+                            <span>{job.experience_bracket}</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* View Details Button */}
