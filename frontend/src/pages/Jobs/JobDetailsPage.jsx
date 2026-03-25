@@ -186,7 +186,7 @@ const JobDetailsPage = () => {
                 {job.salary_amount && (
                   <InfoBadge 
                     icon={IndianRupee} 
-                    label={`₹${job.salary_amount}${job.salary_type ? ` / ${job.salary_type}` : ""}`} 
+                    label={`${job.salary_amount}${job.salary_type ? ` / ${job.salary_type}` : ""}`} 
                   />
                 )}
               </div>
