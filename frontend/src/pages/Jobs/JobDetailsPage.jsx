@@ -291,11 +291,11 @@ const JobDetailsPage = () => {
                         )}
                       </button>
 
-                      {job.google_form_id && !hasApplied && (
+                      {/* {job.google_form_id && !hasApplied && (
                         <a href={job.google_form_id} target="_blank" rel="noopener noreferrer" className="block w-full text-center py-3 text-sm text-slate-600 font-semibold hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors border border-slate-200">
                           Or apply via External Form
                         </a>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>
