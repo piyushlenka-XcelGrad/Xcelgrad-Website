@@ -98,7 +98,7 @@ const JobDetailsPage = () => {
     }
 
     const score = profile?.profile_completion_score || 0;
-    if (score < 90) {
+    if (score < 100) {
       toast.error(`Your profile is only ${score}% complete. Please complete at least 90% to use Quick Apply.`);
       navigate("/profile");
       return;
