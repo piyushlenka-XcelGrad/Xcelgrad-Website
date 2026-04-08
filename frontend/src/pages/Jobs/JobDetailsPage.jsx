@@ -287,7 +287,7 @@ const JobDetailsPage = () => {
                         ) : hasApplied ? (
                           <span className="flex items-center justify-center gap-2"><CheckCircle2 size={20} /> Already Applied</span>
                         ) : (
-                           "⚡ Quick Apply (1-Click)"
+                           "⚡ Apply Now (1-Click)"
                         )}
                       </button>
 
