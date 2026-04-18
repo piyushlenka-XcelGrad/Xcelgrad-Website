@@ -1,8 +1,8 @@
 import axios from 'axios';
 const api = axios.create({
   // Ensure this points to your FastAPI backend
-  baseURL: "http://127.0.0.1:8000/api/v1", 
-  // baseURL: "https://ats-api.xcelgrad.org/api/v1", 
+  // baseURL: "http://127.0.0.1:8000/api/v1", 
+  baseURL: "https://ats-api.xcelgrad.org/api/v1", 
   // baseURL: process.env.REACT_APP_API_URL, 
 });
 api.interceptors.request.use(
