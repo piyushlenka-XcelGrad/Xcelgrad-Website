@@ -517,6 +517,8 @@ export default function ProfilePage() {
     const toastId = toast.loading('Saving changes...');
     try {
       const payload = {
+        full_name: profile.full_name || "",
+        email: profile.email || "",
         headline: profile.headline || "",
         city: profile.city || "",
         country: profile.country || "",
